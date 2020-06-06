@@ -4,6 +4,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const mongoose = require('mongoose')
+mongoose.set("useFindAndModify", false)
 const Blog = require("../models/blog")
 
 const helper = require('../utils/test_helper')
@@ -136,6 +137,32 @@ describe("DELETE", () => {
     test("Delete a blog with a non existent id", async () => {
         const id = await helper.generateID()
         await api.delete(`/api/blogs/${id}`).expect(404)
+    })
+})
+
+describe("UPDATE", () => {
+    test("Update an existing blog", async () => {
+        const before = await helper.returnBlogs()
+        const updateBlog = before[0]
+
+        await api.put(`/api/blogs/${updateBlog.id}`)
+            .send({likes: updateBlog.likes + 1})
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const after = await helper.returnBlogs()
+        const updatedBlog = after.find(blog => blog.id === updateBlog.id)
+        expect(updatedBlog.likes).toBe(updateBlog.likes + 1)
+    })
+
+    test("Update a blog with an id that has an invalid format", async () => {
+        const id = "thisisnotanid"
+        await api.put(`/api/blogs/${id}`).expect(400)
+    })
+
+    test("Update a blog with a non existent id", async () => {
+        const id = await helper.generateID()
+        await api.put(`/api/blogs/${id}`).expect(404)
     })
 })
 

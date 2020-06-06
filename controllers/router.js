@@ -22,4 +22,10 @@ router.delete("/:id", async (req, res) => {
     return res.status(204).end()
 })
 
+router.put("/:id", async (req, res) => {
+    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+
+    return blog ? res.json(blog) : res.status(404).json({ error: 'There is no blog for the given ID' })
+})
+
 module.exports = router
