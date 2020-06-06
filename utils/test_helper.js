@@ -26,4 +26,16 @@ const returnBlogs = async () => {
     return blogs.map(blog => blog.toJSON())
 }
 
-module.exports = {initialBlogs, returnBlogs}
+const generateID = async () => {
+    const newBlog = {
+        title: "DELETE",
+        author: "DELETE",
+        url: "DELETE",
+        likes: 0
+    }
+    const blog = await new Blog(newBlog).save()
+    await Blog.findByIdAndDelete(blog.id)
+    return blog.id
+}
+
+module.exports = {initialBlogs, returnBlogs, generateID}

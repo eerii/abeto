@@ -10,6 +10,9 @@ const unknownEndpoint = (req, res) => {
 }
 
 const errorHandler = (error, req, res, next) => {
+    if (error.name === "CastError" && error.kind === "ObjectId") {
+        return res.status(400).json({ error: "The ID is not formatted correctly" });
+    }
     if (error.name === "ValidationError") {
         return res.status(400).json({ error: error.message })
     }

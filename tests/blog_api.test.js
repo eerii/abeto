@@ -115,6 +115,30 @@ describe("POST", () => {
     })
 })
 
+describe("DELETE", () => {
+    test("Delete an existing blog", async () => {
+        const before = await helper.returnBlogs()
+        const id = before[0].id
+
+        await api.delete(`/api/blogs/${id}`).expect(204)
+
+        const after = await helper.returnBlogs()
+        const idsAfter = after.map(blog => blog.id)
+        expect(after.length).toBe(before.length - 1)
+        expect(idsAfter).not.toContain(id)
+    })
+
+    test("Delete a blog with an id that has an invalid format", async () => {
+        const id = "thisisnotanid"
+        await api.delete(`/api/blogs/${id}`).expect(400)
+    })
+
+    test("Delete a blog with a non existent id", async () => {
+        const id = await helper.generateID()
+        await api.delete(`/api/blogs/${id}`).expect(404)
+    })
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
