@@ -42,10 +42,10 @@ describe("POST", () => {
         likes: 6
     }
 
-    const createBlog = async () => {
+    const createBlog = async (blog) => {
         await api
             .post("/api/blogs")
-            .send(newBlog)
+            .send(blog)
             .expect(201)
             .expect("Content-Type", /application\/json/)
 
@@ -53,26 +53,37 @@ describe("POST", () => {
     }
 
     test("Creating a new blog post increases the number of blogs by one", async () => {
-        const newBlogList = await createBlog()
+        const newBlogList = await createBlog(newBlog)
         expect(newBlogList.length).toBe(helper.initialBlogs.length + 1)
     })
 
     test("Verify title of a new blog post", async () => {
-        const newBlogList = await createBlog()
+        const newBlogList = await createBlog(newBlog)
         const title = newBlogList.map(blog => blog.title)
         expect(title).toContain(newBlog.title)
     })
 
     test("Verify author of a new blog post", async () => {
-        const newBlogList = await createBlog()
+        const newBlogList = await createBlog(newBlog)
         const author = newBlogList.map(blog => blog.author)
         expect(author).toContain(newBlog.author)
     })
 
     test("Verify url of a new blog post", async () => {
-        const newBlogList = await createBlog()
+        const newBlogList = await createBlog(newBlog)
         const url = newBlogList.map(blog => blog.url)
         expect(url).toContain(newBlog.url)
+    })
+
+    test("If likes are empty, verify that it will default to 0", async () => {
+        const noLikes = {
+            title: "New Blog",
+            author: "New Author",
+            url: "New URL"
+        }
+
+        const res = await api.post("/api/blogs").send(noLikes)
+        expect(res.body.likes).toBe(0)
     })
 })
 
