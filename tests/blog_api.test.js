@@ -85,6 +85,34 @@ describe("POST", () => {
         const res = await api.post("/api/blogs").send(noLikes)
         expect(res.body.likes).toBe(0)
     })
+
+    describe("If _____ is missing, the server responds with code 400", () => {
+        test("Title", async () => {
+            const noTitle = {
+                author: "New Author",
+                url: "New URL",
+                likes: 10
+            }
+            await api.post("/api/blogs").send(noTitle).expect(400)
+        })
+
+        test("Url", async () => {
+            const noTitle = {
+                title: "New Title",
+                author: "New Author",
+                likes: 10
+            }
+            await api.post("/api/blogs").send(noTitle).expect(400)
+        })
+
+        test("Title and Url", async () => {
+            const noTitle = {
+                author: "New Author",
+                likes: 10
+            }
+            await api.post("/api/blogs").send(noTitle).expect(400)
+        })
+    })
 })
 
 afterAll(() => {

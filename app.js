@@ -3,6 +3,7 @@
 const env = require("./utils/env")
 //Express
 const express = require("express")
+require("express-async-errors")
 const app = express()
 //Mongoose
 const mongoose = require("mongoose")
