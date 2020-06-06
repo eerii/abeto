@@ -4,14 +4,13 @@
   "description": "Allows users to save information about blogs they like",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose",
-    "devStart": "nodemon index.js",
-    "start": "node index.js"
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "start": "NODE_ENV=production node index.js"
   },
   "author": "José Pazos Pérez",
   "license": "MIT",
   "dependencies": {
-    "@jest/globals": "^26.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
@@ -20,7 +19,8 @@
   "devDependencies": {
     "dotenv": "^8.2.0",
     "jest": "^26.0.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"
