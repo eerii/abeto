@@ -50,7 +50,7 @@ router.delete("/:id", async (req, res) => {
     if (!blog) { return res.status(404).json({ error: 'There is no blog for the given ID' }) }
 
     if (blog.user.toString() === user._id.toString()) {
-        return res.status(403).json({ error: "This user is forbidden to delete this entry" })
+        return res.status(401).json({ error: "This user is forbidden to delete this entry" })
     }
 
     await blog.remove()
