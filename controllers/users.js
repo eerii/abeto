@@ -1,6 +1,8 @@
 const router = require('express').Router()
-const User = require('../models/user')
+
 const bcrypt = require('bcrypt')
+
+const User = require('../models/user')
 
 //ROUTES
 router.get("/", async (req, res) => {
@@ -19,8 +21,8 @@ router.post("/", async (req, res) => {
         res.status(400).json({error: "The password needs to contain at least one letter" })
     } else if (req.body.password.search(/[0-9]/) < 0) {
         res.status(400).json({error: "The password needs to contain at least one number" })
-    } else if (req.body.password.search(/[!@#$%^&*]/) < 0) {
-        res.status(400).json({error: "The password needs to contain at least one special character" })
+    /*} else if (req.body.password.search(/[!@#$%^&*]/) < 0) {
+        res.status(400).json({error: "The password needs to contain at least one special character" })*/
     } else {
         const hash = await bcrypt.hash(req.body.password, saltRounds)
 
