@@ -1,12 +1,12 @@
-const router = require('express').Router()
+const router = require("express").Router()
 
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt")
 
-const User = require('../models/user')
+const User = require("../models/user")
 
 //ROUTES
 router.get("/", async (req, res) => {
-    const users = await User.find().populate('blogs', { likes: 0, user: 0, author: 0, url: 0})
+    const users = await User.find().populate("blogs", { likes: 0, user: 0, author: 0, url: 0})
     res.json(users)
 })
 

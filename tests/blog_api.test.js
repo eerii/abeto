@@ -12,16 +12,15 @@ const User = require("../models/user")
 const helper = require("../utils/test_helper")
 const bcrypt = require("bcrypt")
 
-//TODO: Change for user login
-const userId = "5edd0e220847903b2630c339"
-
 beforeAll(async () => {
-    //await User.deleteMany({})
-
     const user = {
         username: "testuser",
-        password: "averysecurepassword0!"
+        password: "averysecurepassword1!"
     }
+
+    const res = await api.post('/api/login').send(user)
+
+    helper.token = `Bearer ${res.body.token}`
 })
 
 beforeEach(async () => {
@@ -50,22 +49,18 @@ describe("GET", () => {
 })
 
 describe("POST", () => {
-    const getUser = async () => {
-        const {user} = await api.get("/api/users")
-        return user
-    }
 
     const newBlog = {
         title: "New Blog",
         author: "New Author",
         url: "New URL",
-        likes: 6,
-        user : userId
+        likes: 6
     }
 
     const createBlog = async (blog) => {
         await api
             .post("/api/blogs")
+            .set('Authorization', helper.token)
             .send(blog)
             .expect(201)
             .expect("Content-Type", /application\/json/)
@@ -103,7 +98,11 @@ describe("POST", () => {
             url: "New URL"
         }
 
-        const res = await api.post("/api/blogs").send(noLikes)
+        const res = await api
+            .post("/api/blogs")
+            .set('Authorization', helper.token)
+            .send(noLikes)
+
         expect(res.body.likes).toBe(0)
     })
 
@@ -114,7 +113,10 @@ describe("POST", () => {
                 url: "New URL",
                 likes: 10
             }
-            await api.post("/api/blogs").send(noTitle).expect(400)
+            await api.post("/api/blogs")
+                .set('Authorization', helper.token)
+                .send(noTitle)
+                .expect(400)
         })
 
         test("Url", async () => {
@@ -123,7 +125,10 @@ describe("POST", () => {
                 author: "New Author",
                 likes: 10
             }
-            await api.post("/api/blogs").send(noTitle).expect(400)
+            await api.post("/api/blogs")
+                .set('Authorization', helper.token)
+                .send(noTitle)
+                .expect(400)
         })
 
         test("Title and Url", async () => {
@@ -131,7 +136,10 @@ describe("POST", () => {
                 author: "New Author",
                 likes: 10
             }
-            await api.post("/api/blogs").send(noTitle).expect(400)
+            await api.post("/api/blogs")
+                .set('Authorization', helper.token)
+                .send(noTitle)
+                .expect(400)
         })
     })
 })

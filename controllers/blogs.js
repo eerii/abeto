@@ -1,23 +1,37 @@
 const router = require("express").Router()
+const jwt = require("jsonwebtoken")
 
 const Blog = require("../models/blog")
 const User = require("../models/user")
+const {SECRET} = require("../utils/env")
+
+const getToken = req => {
+    const auth = req.get("authorization")
+    return (auth && auth.toLowerCase().startsWith("bearer ")) ? auth.substring(7) : null
+}
 
 //ROUTES
 router.get("/", async (req, res) => {
-    const blogs = await Blog.find().populate('user', { blogs: 0, passwordHash: 0, name: 0})
+    const blogs = await Blog.find().populate("user", { blogs: 0, passwordHash: 0, name: 0})
     res.json(blogs)
 })
 
 router.post("/", async (req, res) => {
-    const user = await User.findById(req.body.user)
+    const token = getToken(req)
+    const decodedToken = jwt.verify(token, SECRET)
+
+    if (!token || !decodedToken.id) {
+        return res.status(401).json({ error: "Token is missing or invalid" })
+    }
+
+    const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({
         title: req.body.title,
         author: req.body.author,
         url: req.body.url,
-        likes: req.body.url,
-        user: req.body.user
+        likes: req.body.likes,
+        user: user._id
     })
 
     const result = await blog.save()
