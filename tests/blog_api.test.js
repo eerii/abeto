@@ -5,10 +5,24 @@ const api = supertest(app)
 
 const mongoose = require("mongoose")
 mongoose.set("useFindAndModify", false)
+
 const Blog = require("../models/blog")
+const User = require("../models/user")
 
 const helper = require("../utils/test_helper")
+const bcrypt = require("bcrypt")
 
+//TODO: Change for user login
+const userId = "5edd0e220847903b2630c339"
+
+beforeAll(async () => {
+    //await User.deleteMany({})
+
+    const user = {
+        username: "testuser",
+        password: "averysecurepassword0!"
+    }
+})
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -36,11 +50,17 @@ describe("GET", () => {
 })
 
 describe("POST", () => {
+    const getUser = async () => {
+        const {user} = await api.get("/api/users")
+        return user
+    }
+
     const newBlog = {
         title: "New Blog",
         author: "New Author",
         url: "New URL",
-        likes: 6
+        likes: 6,
+        user : userId
     }
 
     const createBlog = async (blog) => {
