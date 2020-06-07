@@ -10,7 +10,7 @@ const blogSchema = mongoose.Schema({
     },
     url: {
         type: String,
-        required: [true, "Title is missing"]
+        required: [true, "URL is missing"]
     },
     likes: {
         type: Number,
@@ -18,7 +18,7 @@ const blogSchema = mongoose.Schema({
     }
 })
 
-blogSchema.set('toJSON', {
+blogSchema.set("toJSON", {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
@@ -26,6 +26,6 @@ blogSchema.set('toJSON', {
     }
 })
 
-const Blog = mongoose.model('Blog', blogSchema)
+const Blog = mongoose.model("Blog", blogSchema)
 
 module.exports = Blog
