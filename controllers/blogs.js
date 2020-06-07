@@ -5,10 +5,6 @@ const Blog = require("../models/blog")
 const User = require("../models/user")
 const {SECRET} = require("../utils/env")
 
-const getToken = req => {
-    const auth = req.get("authorization")
-    return (auth && auth.toLowerCase().startsWith("bearer ")) ? auth.substring(7) : null
-}
 
 //ROUTES
 router.get("/", async (req, res) => {
@@ -17,10 +13,9 @@ router.get("/", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-    const token = getToken(req)
-    const decodedToken = jwt.verify(token, SECRET)
+    const decodedToken = jwt.verify(req.token, SECRET)
 
-    if (!token || !decodedToken.id) {
+    if (!req.token || !decodedToken.id) {
         return res.status(401).json({ error: "Token is missing or invalid" })
     }
 
